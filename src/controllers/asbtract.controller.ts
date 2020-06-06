@@ -1,4 +1,6 @@
+import { Router } from "express";
+
 export abstract class AbstractController {
-    public abstract router: any;
+    public abstract router: Router;
     public abstract init(): AbstractController;
 }

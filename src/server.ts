@@ -1,3 +1,6 @@
+// polyfill
+// import "reflect-metadata";
+
 import App from './app'
 
 import * as bodyParser from 'body-parser'
