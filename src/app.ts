@@ -2,6 +2,7 @@ import * as express from 'express'
 import { Application } from 'express'
 import { AbstractController } from 'controllers/asbtract.controller'
 import { Middleware } from 'middleware/logger'
+import "reflect-metadata";
 
 class App {
     public app: Application
