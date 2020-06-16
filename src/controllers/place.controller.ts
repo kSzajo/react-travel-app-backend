@@ -4,6 +4,7 @@ import "reflect-metadata";
 import {container} from "tsyringe";
 import {PlaceService} from '../services/place.service';
 import {AbstractController} from './asbtract.controller';
+import Place from "../model/place";
 
 class PlaceController extends AbstractController {
     public path = '/places'
@@ -11,13 +12,13 @@ class PlaceController extends AbstractController {
     public service: PlaceService = container.resolve(PlaceService)
 
     public init(): PlaceController {
-        this.router.get(this.path + '/:id', this.getPostById)
-        this.router.get(this.path, this.getAllPosts)
+        this.router.get(this.path + '/:id', this.getPlaceById)
+        this.router.get(this.path, this.getAllPlaces)
         // this.router.post(this.path, this.create)
         return this;
     }
 
-    getPostById = (req: Request, res: Response): void => {
+    getPlaceById = (req: Request, res: Response): void => {
         const id = +req.params.id
         let result = this.service.getPlaceById(id)
 
@@ -30,10 +31,10 @@ class PlaceController extends AbstractController {
         }
     }
 
-    getAllPosts = (req: Request, res: Response) => {
-        let result = this.service.getAllPlaces()
+    getAllPlaces = (req: Request, res: Response) => {
+       this.service.getAllPlaces().then(x => res.send(x))
 
-        res.send(result)
+
     }
 
     // create = (req: Request, res: Response) => {

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
-    "start": "node --inspect=5858 -r ts-node/register ./src/server.ts",
+    "start": "tsc && node dist/server.js",
     "build": "tsc -p ."
   },
   "author": "DELANOS",
