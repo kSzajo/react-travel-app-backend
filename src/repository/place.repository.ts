@@ -7,43 +7,40 @@ import {Database} from "sqlite3";
 export class PlaceRepository {
 
     async getAll(): Promise<Place[]> {
-        const db: Database = new sqlite3.Database('src/db/react-travel-app-db.db', sqlite3.OPEN_READWRITE, (err) => {
-            if (err) {
-                console.error(err.message);
-            } else {
-                console.log('Connected to the chinook database.');
-            }
-        });
-
-
-        return new Promise<Place[]>(((resolve, reject) => {
-            // const places: Place[] = []
+        const queryResult = await new Promise<Place[]>(((resolve, reject) => {
             let sql = `SELECT * FROM places`;
+
+            const db: Database = new sqlite3.Database('src/db/react-travel-app-db.db', sqlite3.OPEN_READWRITE, (err) => {
+                if (err) {
+                    console.error('Could not open database', err.message);
+                    reject(err)
+                } else {
+                    console.log('Connected to database.');
+                }
+            });
 
             db.all(sql, [], (err, rows) => {
                 if (err) {
-                    throw err;
+                    reject(err)
+                } else {
+                    resolve(rows)
                 }
-                // rows.forEach((row: Place) => {
-                //     let castedPlace: Place = plainToClass(Place, row, {enableImplicitConversion: true})
-                //     validateOrReject(castedPlace)
-                //         .then(validated => places.push(castedPlace))
-                //         .catch(errors => {
-                //         // console.log('error', errors)
-                //         reject('Internal server error, casting issue')
-                //     });
-                //
-                // });
-                // console.log('going to resolve')
-                resolve(rows)
+                console.log('Closing database')
                 db.close();
-
-
             })
         }))
-            ;
 
-
+        return new Promise<Place[]>(async (resolve, reject) => {
+            for (let row of queryResult) {
+                let place: Place = plainToClass(Place, row, {enableImplicitConversion: true})
+                try {
+                    await validateOrReject(place)
+                } catch (errors) {
+                    reject(errors)
+                }
+            }
+            resolve(queryResult)
+        })
     }
 
     getById(id: number): Place | undefined {

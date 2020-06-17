@@ -4,7 +4,6 @@ import "reflect-metadata";
 import {container} from "tsyringe";
 import {PlaceService} from '../services/place.service';
 import {AbstractController} from './asbtract.controller';
-import Place from "../model/place";
 
 class PlaceController extends AbstractController {
     public path = '/places'
@@ -32,7 +31,12 @@ class PlaceController extends AbstractController {
     }
 
     getAllPlaces = (req: Request, res: Response) => {
-       this.service.getAllPlaces().then(x => res.send(x))
+       this.service.getAllPlaces()
+           .then(x => res.send(x))
+           .catch(err => {
+               res.status(500)
+               res.send('ERROR '+ err)
+           })
 
 
     }
