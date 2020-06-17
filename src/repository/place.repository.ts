@@ -52,4 +52,18 @@ export class PlaceRepository {
     }
 
 
+    async postPlace(place) {
+        // const sqlite = require('sqlite3').verbose()
+        return new Promise<Place[]>(((resolve, reject) => {
+            let db = new sqlite3.Database('src/db/react-travel-app-db.db')
+
+            db.run('INSERT INTO places VALUES ("test1", "test2", "test3")', function(err, row){
+                if (err) {
+                    console.log(err.message)
+                }
+                console.log("TEST ADDED TO THE TABLE")
+            })
+        })
+        )}
+
 }

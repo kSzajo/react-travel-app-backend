@@ -14,7 +14,7 @@ class PlaceController extends AbstractController {
     public init(): PlaceController {
         this.router.get(this.path + '/:id', this.getPlaceById)
         this.router.get(this.path, this.getAllPlaces)
-        // this.router.post(this.path, this.create)
+        this.router.post(this.path, this.create)
         return this;
     }
 
@@ -37,8 +37,9 @@ class PlaceController extends AbstractController {
 
     }
 
-    // create = (req: Request, res: Response) => {
-    // }
+    create = (req: Request, res: Response) => {
+        this.service.postPlace(req.body).then(x => res.send(x))
+    }
 }
 
 export default PlaceController

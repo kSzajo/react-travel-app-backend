@@ -17,4 +17,8 @@ export class PlaceService {
         return this.repository.getById(id);
     }
 
+    postPlace(place: Place): Promise<Place>{
+        return this.repository.postPlace(place)
+    }
+
 }
