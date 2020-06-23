@@ -36,7 +36,8 @@ export class PlaceRepository {
                 try {
                     await validateOrReject(place)
                 } catch (errors) {
-                    reject(errors)
+                    const aa = JSON.stringify(place);
+                    reject(errors + aa)
                 }
             }
             resolve(queryResult)
@@ -49,18 +50,29 @@ export class PlaceRepository {
     }
 
 
-    async postPlace(place) {
-        // const sqlite = require('sqlite3').verbose()
-        return new Promise<Place[]>(((resolve, reject) => {
-            let db = new sqlite3.Database('src/db/react-travel-app-db.db')
+    async postPlace(place): Promise<Place> {
 
-            db.run('INSERT INTO places VALUES ("test1", "test2", "test3")', function(err, row){
+    console.log(place, "new");
+        return await new Promise<Place>(((resolve, reject) => {
+            let db = new sqlite3.Database('src/db/react-travel-app-db.db', sqlite3.OPEN_READWRITE, (err) => {
                 if (err) {
-                    console.log(err.message)
+                    console.error('Could not open database', err.message);
+                    reject(err)
+                } else {
+                    console.log('Connected to database.');
                 }
-                console.log("TEST ADDED TO THE TABLE")
             })
-        })
-        )}
 
+           db.run(`INSERT INTO places (name, type, dimension, price, url, created) VALUES("${place.name}", "${place.type}", "${place.dimension}", "${place.price}", "${place.url}", "${place.created}")`, [], function (err, rows) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(rows)
+                }
+                console.log(place);
+            })
+            console.log('Closing database');
+            db.close();
+        }))
+    }
 }
