@@ -17,28 +17,27 @@ class PlaceController extends AbstractController {
         return this;
     }
 
-    getPlaceById = (req: Request, res: Response): void => {
+    getPlaceById = (req: Request, res: Response) => {
         const id = +req.params.id
-        let result = this.service.getPlaceById(id)
-
-        if (!result) {
+        this.service.getPlaceById(id).then(
+            result => {
+                res.status(200).send(result)
+            }
+        ).catch(err => {
             res.status(404).send({
                 'error': 'Place not found!'
             })
-        } else {
-            res.status(200).send(result)
-        }
+        })
+
     }
 
     getAllPlaces = (req: Request, res: Response) => {
-       this.service.getAllPlaces()
-           .then(x => res.send(x))
-           .catch(err => {
-               res.status(500)
-               res.send('ERROR '+ err)
-           })
-
-
+        this.service.getAllPlaces()
+            .then(x => res.send(x))
+            .catch(err => {
+                res.status(500)
+                res.send('ERROR ' + err)
+            })
     }
 
     create = (req: Request, res: Response) => {

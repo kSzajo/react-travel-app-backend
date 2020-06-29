@@ -44,15 +44,52 @@ export class PlaceRepository {
         })
     }
 
-    getById(id: number): Place | undefined {
-        return undefined
-        // return this.places.find(place => place.id === id)
+    async getById(id: number) {
+        return await new Promise<Place>((resolve, reject) => {
+            const db: Database = new sqlite3.Database('src/db/react-travel-app-db.db', sqlite3.OPEN_READWRITE, (err) => {
+                if (err) {
+                    console.error('Could not open database', err.message);
+                    reject(err)
+                } else {
+                    console.log('Connected to database.');
+                }
+            });
+
+            db.get(`SELECT * FROM places WHERE id = ${id}`, [],(err, row)=>{
+                console.log(row, "this is a row");
+                console.log(id);
+
+                if(!row) {
+                    reject('Not found')
+                }
+
+                if (err) {
+                    reject('Internal server error')
+                } else {
+                    resolve(row)
+                }
+
+                console.log("Closing database");
+                db.close();
+            })
+
+            // return new Promise<Place>(async (resolve, reject) => {
+            //     let place: Place = plainToClass(Place, {enableImplicitConversion: true})
+            //     try {
+            //         await validateOrReject(place)
+            //     } catch (errors) {
+            //         const aa = JSON.stringify(place);
+            //         reject(errors + aa)
+            //     }
+            //     resolve(place)
+            // })
+
+        })
     }
 
 
     async postPlace(place): Promise<Place> {
 
-    console.log(place, "new");
         return await new Promise<Place>(((resolve, reject) => {
             let db = new sqlite3.Database('src/db/react-travel-app-db.db', sqlite3.OPEN_READWRITE, (err) => {
                 if (err) {
