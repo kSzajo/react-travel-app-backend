@@ -3,7 +3,7 @@ import {Request, Response, Router} from 'express';
 import "reflect-metadata";
 import {container} from "tsyringe";
 import {PlaceService} from '../services/place.service';
-import {AbstractController} from './asbtract.controller';
+import {AbstractController} from './abstract.controller';
 
 class PlaceController extends AbstractController {
     public path = '/places'
@@ -13,7 +13,6 @@ class PlaceController extends AbstractController {
     public init(): PlaceController {
         this.router.get(this.path + '/:id', this.getPostById)
         this.router.get(this.path, this.getAllPosts)
-        // this.router.post(this.path, this.create)
         return this;
     }
 
@@ -36,8 +35,6 @@ class PlaceController extends AbstractController {
         res.send(result)
     }
 
-    // create = (req: Request, res: Response) => {
-    // }
 }
 
 export default PlaceController

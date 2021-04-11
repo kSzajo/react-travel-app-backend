@@ -1,44 +1,24 @@
-import * as express from 'express'
-import { Application } from 'express'
-import { AbstractController } from 'controllers/asbtract.controller'
-import { Middleware } from 'middleware/logger'
+// polyfill
+// import "reflect-metadata";
 
-class App {
-    public app: Application
-    public port: number
+import Bundler from './bundler'
 
-    constructor(appInit: { port: number; middleWares: Middleware[]; controllers: AbstractController[]; }) {
-        this.app = express()
-        this.port = appInit.port
+import * as bodyParser from 'body-parser'
+import loggerMiddleware from './middleware/logger'
+import * as cors from 'cors';
+import PlaceController from './controllers/place.controller'
 
-        this.middlewares(appInit.middleWares)
-        this.routes(appInit.controllers)
-        // this.assets()
-    }
+const app = new Bundler({
+    port: 5000,
+    controllers: [
+        new PlaceController().init(),
+    ],
+    middleWares: [
+        bodyParser.json(),
+        bodyParser.urlencoded({ extended: true }),
+        loggerMiddleware,
+        cors()
+    ]
+})
 
-    private middlewares(middleWares: Middleware[]) {
-        middleWares.forEach(middleWare => {
-            this.app.use(middleWare)
-        })
-    }
-
-    private routes(controllers: AbstractController[] ) {
-        controllers.forEach(controller => {
-            this.app.use('/', controller.router)
-        })
-    }
-
-    // private assets() {
-    //     this.app.use(express.static('public'))
-    //     this.app.use(express.static('views'))
-    // }
-
-
-    public listen() {
-        this.app.listen(this.port, () => {
-            console.log(`App listening on the http://localhost:${this.port}`)
-        })
-    }
-}
-
-export default App
+app.listen()
